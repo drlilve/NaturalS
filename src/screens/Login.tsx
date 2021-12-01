@@ -1,0 +1,91 @@
+import React, { useState, useCallback } from 'react'
+import { StyleSheet } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
+import { SafeAreaView, View, Text, TextInput, TouchableView,
+UnderlineText } from '../theme'
+import * as D from '../data'
+import { useAutoFocus, AutoFocusProvider } from '../contexts'
+
+export default function Login() {
+  const [ person, setPerson ] = useState<D.IPerson>(D.createRandomPerson())
+  const [ password, setPassword ] =
+    useState<string>(D.random(1000, 1000000).toString())
+  const focus = useAutoFocus()
+  const navigation = useNavigation()
+  const goTabNavigator = useCallback(() => navigation.navigate('TabNavigator'), [])
+  const goSignUp = useCallback(() => navigation.navigate('SignUp'), [])
+
+  return (
+    <SafeAreaView>
+      <View style={[styles.view]}>
+        <AutoFocusProvider
+          contentContainerStyle={[styles.keyboardAwareFocus]}>
+            <View style={[styles.textView]}>
+              <Text style={[styles.text]}>아이디</Text>
+              <View border style={[styles.textInputView]}>
+                <TextInput onFocus={focus} style={[styles.textInput]}
+                  // value={person.email}
+                  onChangeText={(email) => setPerson((person) =>
+                    ({...person, email}))}
+                  placeholder="아이디를 입력하세요.">모아영123</TextInput>
+              </View>
+            </View>
+            <View style={[styles.textView]}>
+              <Text style={[styles.text]}>비밀번호</Text>
+              <View border style={[styles.textInputView]}>
+                <TextInput secureTextEntry onFocus={focus} style={[styles.textInput]}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="비밀번호를 입력하세요." />
+              </View>
+            </View>
+            <TouchableView notification style={[styles.touchableView]}
+              onPress={goTabNavigator}>
+                <Text style={[styles.text]}>로그인</Text>
+            </TouchableView>
+            <UnderlineText style={[styles.text, {marginTop: 15}]} onPress={goSignUp}>
+              회원가입
+            </UnderlineText>
+          </AutoFocusProvider>
+      </View>
+    </SafeAreaView>
+  )
+}
+const styles = StyleSheet.create({
+  view: {
+    flex: 1, 
+    justifyContent: 'space-between',
+    alignItems:  'center'
+  },
+  text: {
+    fontSize: 20
+  },
+  keyboardAwareFocus: {
+    flex: 1,
+    padding: 5,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  textView: {
+    width: '100%',
+    padding: 5,
+    marginBottom: 10
+  },
+  textInput: {
+    fontSize: 24,
+    padding: 10
+  },
+  textInputView: {
+    marginTop: 5,
+    borderRadius: 10
+  },
+  touchableView: {
+    flexDirection: 'row',
+    height: 50,
+    borderRadius: 10,
+    width: '90%',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+
+})
